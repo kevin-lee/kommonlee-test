@@ -44,7 +44,7 @@ public final class CommonTestHelper
 		}
 		assertThat("The constuctor with the given parameters: " + arrayToString(parameterTypes) + " does not exist in "
 				+ targetClass.getName(), constructor, notNullValue());
-		assertFalse(constructor.isAccessible());
+
 		IllegalAccessException illegalAccessException = null;
 		try
 		{
@@ -54,11 +54,15 @@ public final class CommonTestHelper
 		{
 			illegalAccessException = e;
 		}
-		assertThat(illegalAccessException, is(IllegalAccessException.class));
+		
+		if (null == illegalAccessException)
+		{
+			throw new AssertionError("The selected constructor is accessible.");
+		}
 
-		constructor.setAccessible(true);
 		try
 		{
+			constructor.setAccessible(true);
 			constructor.newInstance(parameters);
 		}
 		catch (IllegalArgumentException e)

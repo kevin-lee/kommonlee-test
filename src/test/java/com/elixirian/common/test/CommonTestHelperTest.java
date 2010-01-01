@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,7 +21,6 @@ import org.junit.Test;
  */
 public class CommonTestHelperTest
 {
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -60,6 +60,24 @@ public class CommonTestHelperTest
 			throw new IllegalStateException(getClass().getName() + " cannot be instantiated.");
 		}
 	}
+	
+	private static class TargetClassWithAccessibleConstructor
+	{
+		public TargetClassWithAccessibleConstructor()
+		{
+		}
+	}
+	
+	private static abstract class TargetAbstractClass
+	{
+		private TargetAbstractClass()
+		{
+		}
+	}
+	
+	private interface TargetInterface
+	{
+	}
 
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#CommonTestHelper()}.
@@ -90,7 +108,6 @@ public class CommonTestHelperTest
 			throw e;
 		}
 		assertThat("The constuctor with the given parameters does not exist in " + targetClass.getName(), constructor, notNullValue());
-		assertFalse(constructor.isAccessible());
 		IllegalAccessException illegalAccessException = null;
 		try
 		{
@@ -135,7 +152,65 @@ public class CommonTestHelperTest
 	{
 		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] {});
 	}
+	
+	/**
+	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * java.lang.Object[])}.
+	 */
+	@Test(expected = NoSuchMethodException.class)
+	public final void testTestNotAccessibleConstructorToTestNoSuchMethodException() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {String.class, int.class}, new Object[] {});
+	}
+	
+	/**
+	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * java.lang.Object[])}.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public final void testTestNotAccessibleConstructorToTestIllegalArgumentException() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] {"test", 123});
+	}
 
+	/**
+	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * java.lang.Object[])}.
+	 */
+	@Test(expected = AssertionError.class)
+	public final void testTestNotAccessibleConstructorWithTargetClassWithAccessibleConstructor() throws Exception
+	{
+		try
+		{
+			CommonTestHelper.testNotAccessibleConstructor(TargetClassWithAccessibleConstructor.class, new Class<?>[] {}, new Object[] {});
+		}
+		catch (AssertionError e)
+		{
+			assertThat(e.getMessage(), equalTo("The selected constructor is accessible."));
+			throw e;
+		}
+	}
+	
+	/**
+	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * java.lang.Object[])}.
+	 */
+	@Test(expected = InstantiationException.class)
+	public final void testTestNotAccessibleConstructorWithUninstantiableTargetClass() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(TargetAbstractClass.class, new Class<?>[] {}, new Object[] {});
+	}
+	
+	/**
+	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * java.lang.Object[])}.
+	 */
+	@Test(expected = NoSuchMethodException.class)
+	public final void testTestNotAccessibleConstructorWithInterface() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(TargetInterface.class, new Class<?>[] {}, new Object[] {});
+	}
+	
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#arrayToString(T[])}.
 	 */
