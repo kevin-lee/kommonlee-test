@@ -7,7 +7,8 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
-import java.util.regex.Pattern;
+import java.security.AccessControlException;
+import java.security.Permission;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,21 +61,53 @@ public class CommonTestHelperTest
 			throw new IllegalStateException(getClass().getName() + " cannot be instantiated.");
 		}
 	}
-	
+
+	private static class SecurityManagerForTesting extends SecurityManager
+	{
+		private final SecurityManager originalSecurityManager;
+
+		private SecurityManagerForTesting(SecurityManager originalSecurityManager)
+		{
+			this.originalSecurityManager = originalSecurityManager;
+		}
+
+		/**
+		 * This is required to put the original SecurityManager back. This method must not throw any exception to properly set the original
+		 * SecurityManager.
+		 */
+		@Override
+		public void checkPermission(Permission perm)
+		{
+			/* MUST DO NOTHING!!! */
+		}
+
+		@Override
+		public void checkMemberAccess(Class<?> clazz, int which)
+		{
+			synchronized (this)
+			{
+				System.out.println("back to the original SecurityManager!!!");
+				System.setSecurityManager(originalSecurityManager);
+				System.out.println("Done!");
+				throw new SecurityException("SecurityException for testing");
+			}
+		}
+	}
+
 	private static class TargetClassWithAccessibleConstructor
 	{
 		public TargetClassWithAccessibleConstructor()
 		{
 		}
 	}
-	
+
 	private static abstract class TargetAbstractClass
 	{
 		private TargetAbstractClass()
 		{
 		}
 	}
-	
+
 	private interface TargetInterface
 	{
 	}
@@ -98,13 +131,11 @@ public class CommonTestHelperTest
 		}
 		catch (SecurityException e)
 		{
-			e.printStackTrace();
 			throw e;
 		}
 		catch (NoSuchMethodException e)
 		{
 			System.err.println("The constuctor with the given parameters does not exist in " + targetClass.getName());
-			e.printStackTrace();
 			throw e;
 		}
 		assertThat("The constuctor with the given parameters does not exist in " + targetClass.getName(), constructor, notNullValue());
@@ -127,18 +158,15 @@ public class CommonTestHelperTest
 		catch (IllegalArgumentException e)
 		{
 			System.err.println("The given constructor parameters do not match with the constructor parameter types.");
-			e.printStackTrace();
 			throw e;
 		}
 		catch (InstantiationException e)
 		{
-			e.printStackTrace();
 			throw e;
 		}
 		catch (Exception e)
 		{
 			e = (Exception) e.getCause();
-			e.printStackTrace();
 			throw e;
 		}
 	}
@@ -152,7 +180,7 @@ public class CommonTestHelperTest
 	{
 		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] {});
 	}
-	
+
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
@@ -160,9 +188,9 @@ public class CommonTestHelperTest
 	@Test(expected = NoSuchMethodException.class)
 	public final void testTestNotAccessibleConstructorToTestNoSuchMethodException() throws Exception
 	{
-		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {String.class, int.class}, new Object[] {});
+		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] { String.class, int.class }, new Object[] {});
 	}
-	
+
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
@@ -170,7 +198,35 @@ public class CommonTestHelperTest
 	@Test(expected = IllegalArgumentException.class)
 	public final void testTestNotAccessibleConstructorToTestIllegalArgumentException() throws Exception
 	{
-		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] {"test", 123});
+		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] { "test", 123 });
+	}
+
+	/**
+	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * java.lang.Object[])}.
+	 */
+	@Test(expected = SecurityException.class)
+	public final void testTestNotAccessibleConstructorToTestSecurityException() throws Throwable
+	{
+		final SecurityManager originalSecurityManager = System.getSecurityManager();
+		SecurityManager testSecurityManager = null;
+		try
+		{
+			testSecurityManager = new SecurityManagerForTesting(originalSecurityManager);
+			System.setSecurityManager(testSecurityManager);
+			CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] {});
+		}
+		finally
+		{
+			if (testSecurityManager == System.getSecurityManager())
+			{
+				System.out.println("finally: testSecurityManager == System.getSecurityManager()");
+			}
+			else if (originalSecurityManager == System.getSecurityManager())
+			{
+				System.out.println("finally: originalSecurityManager == System.getSecurityManager()");
+			}
+		}
 	}
 
 	/**
@@ -190,7 +246,7 @@ public class CommonTestHelperTest
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
@@ -200,7 +256,7 @@ public class CommonTestHelperTest
 	{
 		CommonTestHelper.testNotAccessibleConstructor(TargetAbstractClass.class, new Class<?>[] {}, new Object[] {});
 	}
-	
+
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
@@ -210,7 +266,7 @@ public class CommonTestHelperTest
 	{
 		CommonTestHelper.testNotAccessibleConstructor(TargetInterface.class, new Class<?>[] {}, new Object[] {});
 	}
-	
+
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#arrayToString(T[])}.
 	 */

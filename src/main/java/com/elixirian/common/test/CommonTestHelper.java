@@ -32,14 +32,12 @@ public final class CommonTestHelper
 		}
 		catch (SecurityException e)
 		{
-			e.printStackTrace();
 			throw e;
 		}
 		catch (NoSuchMethodException e)
 		{
 			System.err.println("The constuctor with the given parameters: " + arrayToString(parameterTypes) + " does not exist in "
 					+ targetClass.getName());
-			e.printStackTrace();
 			throw e;
 		}
 		assertThat("The constuctor with the given parameters: " + arrayToString(parameterTypes) + " does not exist in "
@@ -69,18 +67,15 @@ public final class CommonTestHelper
 		{
 			System.err.println("The given constructor parameters: " + arrayToString(parameters)
 					+ " do not match with the constructor parameter types: " + arrayToString(parameterTypes));
-			e.printStackTrace();
 			throw e;
 		}
 		catch (InstantiationException e)
 		{
-			e.printStackTrace();
 			throw e;
 		}
 		catch (Exception e)
 		{
 			e = (Exception) e.getCause();
-			e.printStackTrace();
 			throw e;
 		}
 	}
