@@ -52,7 +52,7 @@ public final class CommonTestHelper
 		{
 			illegalAccessException = e;
 		}
-		
+
 		if (null == illegalAccessException)
 		{
 			throw new AssertionError("The selected constructor is accessible.");

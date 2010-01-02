@@ -7,7 +7,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
-import java.security.AccessControlException;
 import java.security.Permission;
 
 import org.junit.After;
