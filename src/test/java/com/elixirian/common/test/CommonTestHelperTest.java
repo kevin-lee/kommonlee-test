@@ -7,7 +7,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
-import java.security.Permission;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -58,38 +57,6 @@ public class CommonTestHelperTest
 		private TargetClass()
 		{
 			throw new IllegalStateException(getClass().getName() + " cannot be instantiated.");
-		}
-	}
-
-	private static class SecurityManagerForTesting extends SecurityManager
-	{
-		private final SecurityManager originalSecurityManager;
-
-		private SecurityManagerForTesting(SecurityManager originalSecurityManager)
-		{
-			this.originalSecurityManager = originalSecurityManager;
-		}
-
-		/**
-		 * This is required to put the original SecurityManager back. This method must not throw any exception to properly set the original
-		 * SecurityManager.
-		 */
-		@Override
-		public void checkPermission(Permission perm)
-		{
-			/* MUST DO NOTHING!!! */
-		}
-
-		@Override
-		public void checkMemberAccess(Class<?> clazz, int which)
-		{
-			synchronized (this)
-			{
-				System.out.println("back to the original SecurityManager!!!");
-				System.setSecurityManager(originalSecurityManager);
-				System.out.println("Done!");
-				throw new SecurityException("SecurityException for testing");
-			}
 		}
 	}
 
@@ -198,34 +165,6 @@ public class CommonTestHelperTest
 	public final void testTestNotAccessibleConstructorToTestIllegalArgumentException() throws Exception
 	{
 		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] { "test", 123 });
-	}
-
-	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
-	 * java.lang.Object[])}.
-	 */
-	@Test(expected = SecurityException.class)
-	public final void testTestNotAccessibleConstructorToTestSecurityException() throws Throwable
-	{
-		final SecurityManager originalSecurityManager = System.getSecurityManager();
-		SecurityManager testSecurityManager = null;
-		try
-		{
-			testSecurityManager = new SecurityManagerForTesting(originalSecurityManager);
-			System.setSecurityManager(testSecurityManager);
-			CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] {});
-		}
-		finally
-		{
-			if (testSecurityManager == System.getSecurityManager())
-			{
-				System.out.println("finally: testSecurityManager == System.getSecurityManager()");
-			}
-			else if (originalSecurityManager == System.getSecurityManager())
-			{
-				System.out.println("finally: originalSecurityManager == System.getSecurityManager()");
-			}
-		}
 	}
 
 	/**
