@@ -11,6 +11,7 @@ import java.lang.reflect.Constructor;
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-01-01)
+ * @version 0.0.2 (2010-02-23) commented...
  */
 public final class CommonTestHelper
 {
@@ -22,6 +23,19 @@ public final class CommonTestHelper
 		throw new IllegalStateException(getClass().getName() + " cannot be instantiated.");
 	}
 
+	/**
+	 * This method throws IllegalStateException if the target class passed the test.
+	 * 
+	 * @param <T>
+	 *            any type.
+	 * @param targetClass
+	 *            the target class the constructor of which is to be tested.
+	 * @param parameterTypes
+	 *            the constructor parameter types.
+	 * @param parameters
+	 *            the constructor parameter values.
+	 * @throws Exception
+	 */
 	public static <T> void testNotAccessibleConstructor(Class<T> targetClass, Class<?>[] parameterTypes, Object[] parameters)
 			throws Exception
 	{
