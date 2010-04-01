@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Constructor;
 
 /**
+ * This class is to test a private constructor.
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-01-01)
  * @version 0.0.2 (2010-02-23) commented...
@@ -101,7 +103,7 @@ public final class CommonTestHelper
 			return "no parameters";
 		}
 
-		StringBuilder stringBuilder = new StringBuilder("[");
+		final StringBuilder stringBuilder = new StringBuilder("[");
 		for (T t : array)
 		{
 			if (t instanceof String)
