@@ -211,6 +211,7 @@ public class CommonTestHelperTest
 	@Test
 	public final void testArrayToString()
 	{
+		@SuppressWarnings("boxing")
 		Object[] objectArray = { "Test", 123, true, 23.34D, (short) 10, 222L, 12.43f };
 		assertThat(CommonTestHelper.arrayToString(objectArray), equalTo("[\"Test\", 123, true, 23.34, 10, 222, 12.43]"));
 	}
@@ -218,6 +219,7 @@ public class CommonTestHelperTest
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#classArrayOf(java.lang.Class<?>[])}.
 	 */
+	@SuppressWarnings("boxing")
 	@Test
 	public final void testClassArrayOf()
 	{
@@ -243,6 +245,7 @@ public class CommonTestHelperTest
 	/**
 	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#objectArrayOf(java.lang.Object[])}.
 	 */
+	@SuppressWarnings("boxing")
 	@Test
 	public final void testObjectArrayOf()
 	{
