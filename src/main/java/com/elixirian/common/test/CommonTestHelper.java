@@ -38,8 +38,8 @@ public final class CommonTestHelper
 	 *            the constructor parameter values.
 	 * @throws Exception
 	 */
-	public static <T> void testNotAccessibleConstructor(Class<T> targetClass, Class<?>[] parameterTypes, Object[] parameters)
-			throws Exception
+	public static <T> void testNotAccessibleConstructor(final Class<T> targetClass, final Class<?>[] parameterTypes,
+			final Object[] parameters) throws Exception
 	{
 		Constructor<T> constructor = null;
 		try
@@ -52,8 +52,8 @@ public final class CommonTestHelper
 		}
 		catch (NoSuchMethodException e)
 		{
-			System.err.println("The constuctor with the given parameters: " + arrayToString(parameterTypes) + " does not exist in "
-					+ targetClass.getName());
+			System.err.println("The constuctor with the given parameters: " + arrayToString(parameterTypes)
+					+ " does not exist in " + targetClass.getName());
 			throw e;
 		}
 		assertThat("The constuctor with the given parameters: " + arrayToString(parameterTypes) + " does not exist in "
@@ -96,7 +96,7 @@ public final class CommonTestHelper
 		}
 	}
 
-	public static <T> String arrayToString(T[] array)
+	public static <T> String arrayToString(final T[] array)
 	{
 		if (null == array || 0 == array.length)
 		{
@@ -126,7 +126,7 @@ public final class CommonTestHelper
 				.toString();
 	}
 
-	public static Class<?>[] classArrayOf(Class<?>... classes)
+	public static Class<?>[] classArrayOf(final Class<?>... classes)
 	{
 		if (null == classes || 0 == classes.length)
 		{
@@ -135,7 +135,7 @@ public final class CommonTestHelper
 		return classes;
 	}
 
-	public static Object[] objectArrayOf(Object... objects)
+	public static Object[] objectArrayOf(final Object... objects)
 	{
 		if (null == objects || 0 == objects.length)
 		{
