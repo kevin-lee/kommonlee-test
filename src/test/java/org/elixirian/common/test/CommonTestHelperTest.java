@@ -1,13 +1,14 @@
 /**
  * 
  */
-package com.elixirian.common.test;
+package org.elixirian.common.test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
 
+import org.elixirian.common.test.CommonTestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -79,7 +80,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#CommonTestHelper()}.
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#CommonTestHelper()}.
 	 * 
 	 * @throws Exception
 	 */
@@ -138,7 +139,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
 	 */
 	@Test(expected = IllegalStateException.class)
@@ -148,7 +149,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
 	 */
 	@Test(expected = NoSuchMethodException.class)
@@ -158,7 +159,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
 	 */
 	@Test(expected = IllegalArgumentException.class)
@@ -168,7 +169,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
 	 */
 	@Test(expected = AssertionError.class)
@@ -186,7 +187,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
 	 */
 	@Test(expected = InstantiationException.class)
@@ -196,7 +197,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
 	 * java.lang.Object[])}.
 	 */
 	@Test(expected = NoSuchMethodException.class)
@@ -206,7 +207,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#arrayToString(T[])}.
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#arrayToString(T[])}.
 	 */
 	@Test
 	public final void testArrayToString()
@@ -217,7 +218,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#classArrayOf(java.lang.Class<?>[])}.
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#classArrayOf(java.lang.Class<?>[])}.
 	 */
 	@SuppressWarnings("boxing")
 	@Test
@@ -243,7 +244,7 @@ public class CommonTestHelperTest
 	}
 
 	/**
-	 * Test method for {@link com.elixirian.common.test.CommonTestHelper#objectArrayOf(java.lang.Object[])}.
+	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#objectArrayOf(java.lang.Object[])}.
 	 */
 	@SuppressWarnings("boxing")
 	@Test

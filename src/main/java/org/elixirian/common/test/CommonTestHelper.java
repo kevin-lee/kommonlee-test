@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.elixirian.common.test;
+package org.elixirian.common.test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
