@@ -3,65 +3,53 @@
  */
 package org.elixirian.common.test;
 
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
 
-import org.elixirian.common.test.CommonTestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.elixirian.common.test.CommonTestHelper.Accessibility;
+import org.elixirian.common.test.another.ClassWithPackagePrivateConstructor;
+import org.elixirian.common.test.another.ClassWithProtectedConstructor;
+import org.elixirian.common.test.another.SomeObjectForTesting;
 import org.junit.Test;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-01-01)
+ * @version 0.0.1 (2010-02-03)
  */
 public class CommonTestHelperTest
 {
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception
-	{
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception
-	{
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception
-	{
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception
-	{
-	}
-
 	private static class TargetClass
 	{
 		private TargetClass()
 		{
-			throw new IllegalStateException(getClass().getName() + " cannot be instantiated.");
 		}
 	}
 
-	private static class TargetClassWithAccessibleConstructor
+	private static class TestClassWithPackagePrivateConstructor
+	{
+		TestClassWithPackagePrivateConstructor()
+		{
+		}
+	}
+
+	private static class TestClassWithProtectedConstructor
+	{
+		protected TestClassWithProtectedConstructor()
+		{
+		}
+	}
+
+	private static class TargetClassWithPublicConstructor
+	{
+		public TargetClassWithPublicConstructor()
+		{
+		}
+	}
+
+	public static class TargetClassWithAccessibleConstructor
 	{
 		public TargetClassWithAccessibleConstructor()
 		{
@@ -70,7 +58,7 @@ public class CommonTestHelperTest
 
 	private static abstract class TargetAbstractClass
 	{
-		private TargetAbstractClass()
+		public TargetAbstractClass()
 		{
 		}
 	}
@@ -79,11 +67,6 @@ public class CommonTestHelperTest
 	{
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#CommonTestHelper()}.
-	 * 
-	 * @throws Exception
-	 */
 	@Test(expected = IllegalStateException.class)
 	public final void testCommonTestHelper() throws Exception
 	{
@@ -105,7 +88,8 @@ public class CommonTestHelperTest
 			System.err.println("The constuctor with the given parameters does not exist in " + targetClass.getName());
 			throw e;
 		}
-		assertThat("The constuctor with the given parameters does not exist in " + targetClass.getName(), constructor, notNullValue());
+		assertThat("The constuctor with the given parameters does not exist in " + targetClass.getName(), constructor,
+				notNullValue());
 		IllegalAccessException illegalAccessException = null;
 		try
 		{
@@ -138,46 +122,69 @@ public class CommonTestHelperTest
 		}
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
-	 * java.lang.Object[])}.
-	 */
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalAccessException.class)
 	public final void testTestNotAccessibleConstructor() throws Exception
 	{
-		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] {});
+		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, this, Accessibility.PRIVATE,
+				new Class<?>[] {}, new Object[] {});
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
-	 * java.lang.Object[])}.
-	 */
+	@Test(expected = IllegalAccessException.class)
+	public final void testTestWithPackagePrivateConstructor() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(ClassWithPackagePrivateConstructor.class, this,
+				Accessibility.PACKAGE_PRIVATE, new Class<?>[] {}, new Object[] {});
+	}
+
+	@Test(expected = IllegalAccessException.class)
+	public final void testTestWithPackagePrivateConstructor2() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(TestClassWithPackagePrivateConstructor.class,
+				SomeObjectForTesting.INSTANCE, Accessibility.PACKAGE_PRIVATE, new Class<?>[] {}, new Object[] {});
+	}
+
+	@Test(expected = IllegalAccessException.class)
+	public final void testTestWithProtectedConstructor() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(ClassWithProtectedConstructor.class, this,
+				Accessibility.PROTECTED, new Class<?>[] {}, new Object[] {});
+	}
+
+	@Test(expected = IllegalAccessException.class)
+	public final void testTestWithProtectedConstructor2() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(TestClassWithProtectedConstructor.class,
+				SomeObjectForTesting.INSTANCE, Accessibility.PROTECTED, new Class<?>[] {}, new Object[] {});
+	}
+
 	@Test(expected = NoSuchMethodException.class)
 	public final void testTestNotAccessibleConstructorToTestNoSuchMethodException() throws Exception
 	{
-		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] { String.class, int.class }, new Object[] {});
+		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, this, Accessibility.PUBLIC, new Class<?>[] {
+				String.class, int.class }, new Object[] {});
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
-	 * java.lang.Object[])}.
-	 */
+	@Test(expected = IllegalArgumentException.class)
+	public final void testTestAccessibleConstructorToTestIllegalArgumentException() throws Exception
+	{
+		CommonTestHelper.testNotAccessibleConstructor(TargetClassWithPublicConstructor.class, this,
+				Accessibility.PUBLIC, new Class<?>[] {}, new Object[] { "test", 123 });
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public final void testTestNotAccessibleConstructorToTestIllegalArgumentException() throws Exception
 	{
-		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, new Class<?>[] {}, new Object[] { "test", 123 });
+		CommonTestHelper.testNotAccessibleConstructor(TargetClass.class, this, Accessibility.PRIVATE, true,
+				new Class<?>[] {}, new Object[] { "test", 123 });
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
-	 * java.lang.Object[])}.
-	 */
 	@Test(expected = AssertionError.class)
 	public final void testTestNotAccessibleConstructorWithTargetClassWithAccessibleConstructor() throws Exception
 	{
 		try
 		{
-			CommonTestHelper.testNotAccessibleConstructor(TargetClassWithAccessibleConstructor.class, new Class<?>[] {}, new Object[] {});
+			CommonTestHelper.testNotAccessibleConstructor(TargetClassWithAccessibleConstructor.class, this,
+					Accessibility.PUBLIC, new Class<?>[] {}, new Object[] {});
 		}
 		catch (AssertionError e)
 		{
@@ -186,56 +193,44 @@ public class CommonTestHelperTest
 		}
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
-	 * java.lang.Object[])}.
-	 */
 	@Test(expected = InstantiationException.class)
 	public final void testTestNotAccessibleConstructorWithUninstantiableTargetClass() throws Exception
 	{
-		CommonTestHelper.testNotAccessibleConstructor(TargetAbstractClass.class, new Class<?>[] {}, new Object[] {});
+		CommonTestHelper.testNotAccessibleConstructor(TargetAbstractClass.class, this, Accessibility.PUBLIC,
+				new Class<?>[] {}, new Object[] {});
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#testNotAccessibleConstructor(java.lang.Class, java.lang.Class<?>[],
-	 * java.lang.Object[])}.
-	 */
 	@Test(expected = NoSuchMethodException.class)
 	public final void testTestNotAccessibleConstructorWithInterface() throws Exception
 	{
-		CommonTestHelper.testNotAccessibleConstructor(TargetInterface.class, new Class<?>[] {}, new Object[] {});
+		CommonTestHelper.testNotAccessibleConstructor(TargetInterface.class, this, Accessibility.PUBLIC,
+				new Class<?>[] {}, new Object[] {});
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#arrayToString(T[])}.
-	 */
 	@Test
 	public final void testArrayToString()
 	{
 		@SuppressWarnings("boxing")
-		Object[] objectArray = { "Test", 123, true, 23.34D, (short) 10, 222L, 12.43f };
+		final Object[] objectArray = { "Test", 123, true, 23.34D, (short) 10, 222L, 12.43f };
 		assertThat(CommonTestHelper.arrayToString(objectArray), equalTo("[\"Test\", 123, true, 23.34, 10, 222, 12.43]"));
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#classArrayOf(java.lang.Class<?>[])}.
-	 */
 	@SuppressWarnings("boxing")
 	@Test
 	public final void testClassArrayOf()
 	{
-		Class<?>[] classArray = CommonTestHelper.classArrayOf(null);
-		assertThat(classArray.length, equalTo(CommonTestHelper.EMPTY_CLASS_ARRAY.length));
-		assertThat(classArray, equalTo(CommonTestHelper.EMPTY_CLASS_ARRAY));
+		Class<?>[] classArray = CommonTestHelper.classArrayOf();
+		assertThat(classArray.length, is(equalTo(CommonTestHelper.EMPTY_CLASS_ARRAY.length)));
+		assertThat(classArray, is(equalTo(CommonTestHelper.EMPTY_CLASS_ARRAY)));
 
-		classArray = CommonTestHelper.classArrayOf();
-		assertThat(classArray.length, equalTo(CommonTestHelper.EMPTY_CLASS_ARRAY.length));
-		assertThat(classArray, equalTo(CommonTestHelper.EMPTY_CLASS_ARRAY));
+		classArray = CommonTestHelper.classArrayOf((Class<?>) null);
+		assertThat(classArray.length, is(equalTo(1)));
+		assertThat(classArray, is(equalTo(new Object[] { null })));
 
 		final Class<?>[] expectedClassArray = new Class<?>[] { String.class, int.class, Integer.class };
 		classArray = CommonTestHelper.classArrayOf(String.class, int.class, Integer.class);
 
-		assertThat(classArray.length, equalTo(expectedClassArray.length));
+		assertThat(classArray.length, is(equalTo(expectedClassArray.length)));
 
 		for (int i = 0, size = expectedClassArray.length; i < size; i++)
 		{
@@ -243,25 +238,22 @@ public class CommonTestHelperTest
 		}
 	}
 
-	/**
-	 * Test method for {@link org.elixirian.common.test.CommonTestHelper#objectArrayOf(java.lang.Object[])}.
-	 */
 	@SuppressWarnings("boxing")
 	@Test
 	public final void testObjectArrayOf()
 	{
-		Object[] objectArray = CommonTestHelper.objectArrayOf(null);
-		assertThat(objectArray.length, equalTo(CommonTestHelper.EMPTY_OBJECT_ARRAY.length));
-		assertThat(objectArray, equalTo(CommonTestHelper.EMPTY_OBJECT_ARRAY));
+		Object[] objectArray = CommonTestHelper.objectArrayOf();
+		assertThat(objectArray.length, is(equalTo(CommonTestHelper.EMPTY_OBJECT_ARRAY.length)));
+		assertThat(objectArray, is(equalTo(CommonTestHelper.EMPTY_OBJECT_ARRAY)));
 
-		objectArray = CommonTestHelper.objectArrayOf();
-		assertThat(objectArray.length, equalTo(CommonTestHelper.EMPTY_OBJECT_ARRAY.length));
-		assertThat(objectArray, equalTo(CommonTestHelper.EMPTY_OBJECT_ARRAY));
+		objectArray = CommonTestHelper.objectArrayOf((Object) null);
+		assertThat(objectArray.length, is(equalTo(1)));
+		assertThat(objectArray, is(equalTo(new Object[] { null })));
 
 		final Object[] expectedObjectArray = new Object[] { "Test", 123, true, 23.34D, (short) 10, 222L, 12.43f };
 		objectArray = CommonTestHelper.objectArrayOf("Test", 123, true, 23.34D, (short) 10, 222L, 12.43f);
 
-		assertThat(objectArray.length, equalTo(expectedObjectArray.length));
+		assertThat(objectArray.length, is(equalTo(expectedObjectArray.length)));
 
 		for (int i = 0, size = expectedObjectArray.length; i < size; i++)
 		{
