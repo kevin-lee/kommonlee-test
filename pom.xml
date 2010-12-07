@@ -5,7 +5,7 @@
 	<groupId>org.elixirian</groupId>
 	<artifactId>elixirian-common-test</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.9-SNAPSHOT</version>
 	<name>elixirian-common-test</name>
 	<url>http://elixirian.com</url>
 	<parent>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
+			<version>4.8.2</version>
 		</dependency>
 	</dependencies>
 </project>
