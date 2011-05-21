@@ -5,7 +5,7 @@
 	<groupId>org.elixirian</groupId>
 	<artifactId>elixirian-common-test</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.9-SNAPSHOT</version>
+	<version>0.0.10-SNAPSHOT</version>
 	<name>elixirian-common-test</name>
 	<url>http://elixirian.com</url>
 	<parent>
@@ -54,6 +54,13 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.5</version>
+			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
