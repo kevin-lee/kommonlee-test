@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.elixirian.common.test;
+package org.elixirian.kommonlee.test;
 
 
 import static org.hamcrest.CoreMatchers.*;
@@ -9,10 +9,11 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
 
-import org.elixirian.common.test.CommonTestHelper.Accessibility;
-import org.elixirian.common.test.another.ClassWithPackagePrivateConstructor;
-import org.elixirian.common.test.another.ClassWithProtectedConstructor;
-import org.elixirian.common.test.another.SomeObjectForTesting;
+import org.elixirian.kommonlee.test.CommonTestHelper;
+import org.elixirian.kommonlee.test.CommonTestHelper.Accessibility;
+import org.elixirian.kommonlee.test.another.ClassWithPackagePrivateConstructor;
+import org.elixirian.kommonlee.test.another.ClassWithProtectedConstructor;
+import org.elixirian.kommonlee.test.another.SomeObjectForTesting;
 import org.junit.Test;
 
 /**

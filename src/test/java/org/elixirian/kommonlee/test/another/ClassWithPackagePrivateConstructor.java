@@ -1,4 +1,4 @@
-package org.elixirian.common.test.another;
+package org.elixirian.kommonlee.test.another;
 
 public class ClassWithPackagePrivateConstructor
 {

@@ -1,11 +1,12 @@
-package org.elixirian.common.test;
+package org.elixirian.kommonlee.test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.elixirian.common.test.CauseCheckableExpectedException.CauseCheckableExpectedExceptionStatement;
+import org.elixirian.kommonlee.test.CauseCheckableExpectedException;
+import org.elixirian.kommonlee.test.CauseCheckableExpectedException.CauseCheckableExpectedExceptionStatement;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.AfterClass;

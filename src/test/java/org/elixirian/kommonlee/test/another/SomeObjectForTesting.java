@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.elixirian.common.test.another;
+package org.elixirian.kommonlee.test.another;
 
 /**
  * @author Lee, SeongHyun (Kevin)
