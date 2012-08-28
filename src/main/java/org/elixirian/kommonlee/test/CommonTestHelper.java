@@ -273,18 +273,6 @@ public final class CommonTestHelper
 				+ expectedAccessibility.getName() + "][actual: " + accessibility.getName() + "]", accessibility,
 				is(equalTo(expectedAccessibility)));
 
-		// if (!Accessibility.PUBLIC.equals(expectedAccessibility))
-		// {
-		// if (Accessibility.PUBLIC.equals(accessibility)
-		// || (Accessibility.PACKAGE_PRIVATE.equals(accessibility) && targetPackage.getName()
-		// .equals(testerPackage.getName())))
-		// {
-		// throw new AssertionError("The selected constructor is accessible. \n[tester's package: "
-		// + testerPackage + "]\n[package: " + targetPackage + "]\n[accessibility: "
-		// + accessibility.getName() + "]");
-		// }
-		// }
-
 		IllegalAccessException illegalAccessException = null;
 		try
 		{
@@ -319,9 +307,9 @@ public final class CommonTestHelper
 			final Class<?> testerClass = tester.getClass();
 			final Package testerPackage = testerClass.getPackage();
 
-			if ((Accessibility.PACKAGE_PRIVATE.equals(accessibility) && !targetPackage.getName()
+			if ((Accessibility.PACKAGE_PRIVATE == accessibility && !targetPackage.getName()
 					.equals(testerPackage.getName()))
-					|| (Accessibility.PROTECTED.equals(accessibility) && !targetClass.isAssignableFrom(testerClass)))
+					|| (Accessibility.PROTECTED == accessibility && !targetClass.isAssignableFrom(testerClass)))
 			{
 				throw new IllegalAccessException("[tester: " + testerClass + "]\n[target: " + targetClass
 						+ "]\n[accessibility: " + accessibility.getName() + "]");
@@ -336,7 +324,7 @@ public final class CommonTestHelper
 	{
 		if (null == array || 0 == array.length)
 		{
-			return "no parameters";
+			return "no parameter";
 		}
 
 		final StringBuilder stringBuilder = new StringBuilder("[");
