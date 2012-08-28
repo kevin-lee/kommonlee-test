@@ -1,4 +1,4 @@
-/**
+/*
  * This project is licensed under the Apache License, Version 2.0
  * if the following condition is met:
  * (otherwise it cannot be used by anyone but the author, Kevin, only)
@@ -29,17 +29,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.kommonlee.test.another;
 
 /**
- * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-11-15)
+ * This package contains all the helper and utility classes for testing.
  */
-public final class SomeObjectForTesting
-{
-	public static final SomeObjectForTesting INSTANCE = new SomeObjectForTesting();
-
-	private SomeObjectForTesting()
-	{
-	}
-}
+package org.elixirian.kommonlee.test;

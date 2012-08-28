@@ -1,13 +1,46 @@
 /**
- * 
+ * This project is licensed under the Apache License, Version 2.0
+ * if the following condition is met:
+ * (otherwise it cannot be used by anyone but the author, Kevin, only)
+ *
+ * The original KommonLee project is owned by Lee, Seong Hyun (Kevin).
+ *
+ * -What does it mean to you?
+ * Nothing, unless you want to take the ownership of
+ * "the original project" (not yours or forked & modified one).
+ * You are free to use it for both non-commercial and commercial projects
+ * and free to modify it as the Apache License allows.
+ *
+ * -So why is this condition necessary?
+ * It is only to protect the original project (See the case of Java).
+ *
+ *
+ * Copyright 2009 Lee, Seong Hyun (Kevin)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.elixirian.kommonlee.test;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -19,15 +52,115 @@ public final class CommonTestHelper
 	public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
-	private CommonTestHelper()
+	public static class ConstructorTester<T>
 	{
-		throw new IllegalStateException(getClass().getName() + " cannot be instantiated.");
+		final Class<T> targetClass;
+		final Object tester;
+		Accessibility expectedAccessibility;
+		boolean forceAccessibility;
+		final List<Class<?>> parameterTypes;
+		final List<Object> parameters;
+
+		ConstructorTester(final Class<T> targetClass, final Object tester)
+		{
+			if (null == targetClass)
+			{
+				throw new NullPointerException("Class<?> targetClass must not be null!");
+			}
+			if (null == tester)
+			{
+				throw new NullPointerException("Object tester must not be null!");
+			}
+
+			this.targetClass = targetClass;
+			this.tester = tester;
+			this.expectedAccessibility = Accessibility.PRIVATE;
+			this.forceAccessibility = false;
+			this.parameterTypes = new ArrayList<Class<?>>();
+			this.parameters = new ArrayList<Object>();
+		}
+
+		public ConstructorTester<T> mustBePrivate()
+		{
+			this.expectedAccessibility = Accessibility.PRIVATE;
+			return this;
+		}
+
+		public ConstructorTester<T> mustBePackagePrivate()
+		{
+			this.expectedAccessibility = Accessibility.PACKAGE_PRIVATE;
+			return this;
+		}
+
+		public ConstructorTester<T> mustBeProtected()
+		{
+			this.expectedAccessibility = Accessibility.PROTECTED;
+			return this;
+		}
+
+		public ConstructorTester<T> mustBePublic()
+		{
+			this.expectedAccessibility = Accessibility.PUBLIC;
+			return this;
+		}
+
+		public ConstructorTester<T> forceAccessibility()
+		{
+			this.forceAccessibility = true;
+			return this;
+		}
+
+		public ConstructorTester<T> doNotForceAccessibility()
+		{
+			this.forceAccessibility = true;
+			return this;
+		}
+
+		public ConstructorTester<T> parameterTypeAndValue(final Class<?> parameterType, final Object parameter)
+		{
+			this.parameterTypes.add(parameterType);
+			this.parameters.add(parameter);
+			return this;
+		}
+
+		public ConstructorTester<T> parameterTypes(final Class<?>... parameterTypes)
+		{
+			this.parameterTypes.addAll(Arrays.asList(parameterTypes));
+			return this;
+		}
+
+		public ConstructorTester<T> parameterValues(final Object... parameters)
+		{
+			this.parameters.add(Arrays.asList(parameters));
+			return this;
+		}
+
+		public void test() throws Exception
+		{
+			testNotAccessibleConstructor(targetClass, tester, expectedAccessibility, forceAccessibility,
+					parameterTypes.toArray(new Class<?>[parameterTypes.size()]),
+					parameters.toArray(new Object[parameters.size()]));
+		}
+	}
+
+	public static <T> ConstructorTester<T> newConstructorTester(final Class<T> targetClass, final Object tester)
+	{
+		return new ConstructorTester<T>(targetClass, tester);
+	}
+
+	private CommonTestHelper() throws IllegalAccessException
+	{
+		throw new IllegalAccessException(getClass().getName() + " cannot be instantiated.");
 	}
 
 	public enum Accessibility
 	{
-		PRIVATE(Modifier.PRIVATE, "private"), PACKAGE_PRIVATE(0, "package-private"), PROTECTED(Modifier.PROTECTED,
-				"protected"), PUBLIC(Modifier.PUBLIC, "public");
+		/* @formatter:off */
+		PRIVATE(				Modifier.PRIVATE, 	"private"),
+		PACKAGE_PRIVATE(0, 									"package-private"),
+		PROTECTED(			Modifier.PROTECTED, "protected"),
+		PUBLIC(					Modifier.PUBLIC, 		"public");
+		/* @formatter:on */
 
 		private final int modifier;
 		private final String name;
@@ -61,7 +194,7 @@ public final class CommonTestHelper
 		}
 	}
 
-	private static Accessibility getAccessibility(int mod)
+	private static Accessibility getAccessibility(final int mod)
 	{
 		final Accessibility accessibility = Accessibility.accessibilityOf(mod);
 		if (null == accessibility)
@@ -73,19 +206,19 @@ public final class CommonTestHelper
 
 	/**
 	 * This method throws IllegalStateException if the target class passed the test.
-	 * 
+	 *
 	 * @param <T>
-	 *            any type.
+	 *          any type.
 	 * @param targetClass
-	 *            the target class the constructor of which is to be tested.
+	 *          the target class the constructor of which is to be tested.
 	 * @param tester
-	 *            The object testing the target class.
+	 *          The object testing the target class.
 	 * @param expectedAccessibility
-	 *            expected accessibility.
+	 *          expected accessibility.
 	 * @param parameterTypes
-	 *            the constructor parameter types.
+	 *          the constructor parameter types.
 	 * @param parameters
-	 *            the constructor parameter values.
+	 *          the constructor parameter values.
 	 * @throws Exception
 	 */
 	public static <T> void testNotAccessibleConstructor(final Class<T> targetClass, final Object tester,
@@ -97,36 +230,36 @@ public final class CommonTestHelper
 
 	/**
 	 * This method throws IllegalStateException if the target class passed the test.
-	 * 
+	 *
 	 * @param <T>
-	 *            any type.
+	 *          any type.
 	 * @param targetClass
-	 *            the target class the constructor of which is to be tested.
+	 *          the target class the constructor of which is to be tested.
 	 * @param tester
-	 *            The object testing the target class.
+	 *          The object testing the target class.
 	 * @param expectedAccessibility
-	 *            expected accessibility.
+	 *          expected accessibility.
 	 * @param forceAccessibility
 	 * @param parameterTypes
-	 *            the constructor parameter types.
+	 *          the constructor parameter types.
 	 * @param parameters
-	 *            the constructor parameter values.
+	 *          the constructor parameter values.
 	 * @throws Exception
 	 */
 	public static <T> void testNotAccessibleConstructor(final Class<T> targetClass, final Object tester,
-			final Accessibility expectedAccessibility, final boolean forceAccessibility,
-			final Class<?>[] parameterTypes, final Object[] parameters) throws Exception
+			final Accessibility expectedAccessibility, final boolean forceAccessibility, final Class<?>[] parameterTypes,
+			final Object[] parameters) throws Exception
 	{
 		Constructor<T> constructor = null;
 		try
 		{
 			constructor = targetClass.getDeclaredConstructor(parameterTypes);
 		}
-		catch (SecurityException e)
+		catch (final SecurityException e)
 		{
 			throw e;
 		}
-		catch (NoSuchMethodException e)
+		catch (final NoSuchMethodException e)
 		{
 			System.err.println("The constuctor with the given parameters: " + arrayToString(parameterTypes)
 					+ " does not exist in " + targetClass.getName());
@@ -165,17 +298,17 @@ public final class CommonTestHelper
 			}
 			constructor.newInstance(parameters);
 		}
-		catch (IllegalArgumentException e)
+		catch (final IllegalArgumentException e)
 		{
 			System.err.println("The given constructor parameters: " + arrayToString(parameters)
 					+ " do not match with the constructor parameter types: " + arrayToString(parameterTypes));
 			throw e;
 		}
-		catch (InstantiationException e)
+		catch (final InstantiationException e)
 		{
 			throw e;
 		}
-		catch (IllegalAccessException e)
+		catch (final IllegalAccessException e)
 		{
 			illegalAccessException = e;
 		}
@@ -207,7 +340,7 @@ public final class CommonTestHelper
 		}
 
 		final StringBuilder stringBuilder = new StringBuilder("[");
-		for (T t : array)
+		for (final T t : array)
 		{
 			if (t instanceof String)
 			{
