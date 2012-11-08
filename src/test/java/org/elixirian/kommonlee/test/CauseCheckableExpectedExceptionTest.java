@@ -36,7 +36,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.elixirian.kommonlee.test.CauseCheckableExpectedException;
 import org.elixirian.kommonlee.test.CauseCheckableExpectedException.CauseCheckableExpectedExceptionStatement;
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -46,6 +45,26 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.model.Statement;
 
+/**
+ * <pre>
+ *     ___  _____                                              _____
+ *    /   \/    / ______ __________________  ______ __ ______ /    /   ______  ______  
+ *   /        / _/ __  // /  /   / /  /   /_/ __  // //     //    /   /  ___ \/  ___ \ 
+ *  /        \ /  /_/ _/  _  _  /  _  _  //  /_/ _/   __   //    /___/  _____/  _____/
+ * /____/\____\/_____//__//_//_/__//_//_/ /_____//___/ /__//________/\_____/ \_____/
+ * </pre>
+ * 
+ * <pre>
+ *     ___  _____                                _____
+ *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
+ *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
+ *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
+ * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
+ * </pre>
+ * 
+ * @author Lee, SeongHyun (Kevin)
+ * @version 0.0.1 (2011-05-01)
+ */
 public class CauseCheckableExpectedExceptionTest
 {
 
@@ -109,7 +128,8 @@ public class CauseCheckableExpectedExceptionTest
     final CauseCheckableExpectedException causeCheckableExpectedException = CauseCheckableExpectedException.none();
 
     /* when */
-    final Statement result = causeCheckableExpectedException.apply(base, null, null);
+    // final Statement result = causeCheckableExpectedException.apply(base, null, null);
+    final Statement result = causeCheckableExpectedException.apply(base, null);
 
     /* then */
     assertThat(result, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
@@ -142,7 +162,8 @@ public class CauseCheckableExpectedExceptionTest
 
 		/* when */
 		final CauseCheckableExpectedException result = causeCheckableExpectedException.expect(matcher);
-		final Statement statement = result.apply(base, null, null);
+//		final Statement statement = result.apply(base, null, null);
+		final Statement statement = result.apply(base, null);
 		statement.evaluate();
 
 		/* then */
@@ -170,7 +191,8 @@ public class CauseCheckableExpectedExceptionTest
     /* when */
     final CauseCheckableExpectedException result =
       causeCheckableExpectedException.expect(UnsupportedOperationException.class);
-    final Statement statement = result.apply(base, null, null);
+//    final Statement statement = result.apply(base, null, null);
+    final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
@@ -194,7 +216,8 @@ public class CauseCheckableExpectedExceptionTest
 
     /* when */
     final CauseCheckableExpectedException result = causeCheckableExpectedException.expectMessageContains("test");
-    final Statement statement = result.apply(base, null, null);
+    // final Statement statement = result.apply(base, null, null);
+    final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
@@ -234,7 +257,8 @@ public class CauseCheckableExpectedExceptionTest
     /* when */
     final CauseCheckableExpectedException result =
       causeCheckableExpectedException.expectMessage(is(equalTo(expectedMessage)));
-    final Statement statement = result.apply(base, null, null);
+//    final Statement statement = result.apply(base, null, null);
+    final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
@@ -320,7 +344,8 @@ public class CauseCheckableExpectedExceptionTest
     /* when */
     final CauseCheckableExpectedException result = causeCheckableExpectedException.expect(NestedException.class)
         .expectCause(matcher);
-    final Statement statement = result.apply(base, null, null);
+//    final Statement statement = result.apply(base, null, null);
+    final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
@@ -350,7 +375,8 @@ public class CauseCheckableExpectedExceptionTest
     /* when */
     final CauseCheckableExpectedException result = causeCheckableExpectedException.expect(NestedException.class)
         .expectCause(RootException.class);
-    final Statement statement = result.apply(base, null, null);
+//    final Statement statement = result.apply(base, null, null);
+    final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
@@ -378,7 +404,8 @@ public class CauseCheckableExpectedExceptionTest
     /* when */
     final CauseCheckableExpectedException result = causeCheckableExpectedException.expect(NestedException.class)
         .expectCauseMessageContains("test");
-    final Statement statement = result.apply(base, null, null);
+//    final Statement statement = result.apply(base, null, null);
+    final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
@@ -423,7 +450,8 @@ public class CauseCheckableExpectedExceptionTest
     /* when */
     final CauseCheckableExpectedException result = causeCheckableExpectedException.expect(NestedException.class)
         .expectCauseMessage(is(equalTo(expectedMessage)));
-    final Statement statement = result.apply(base, null, null);
+//    final Statement statement = result.apply(base, null, null);
+    final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
@@ -459,7 +487,8 @@ public class CauseCheckableExpectedExceptionTest
     final CauseCheckableExpectedException result1 = CauseCheckableExpectedException.none();
 
     /* when */
-    final Statement statement = result1.apply(base, null, null);
+    // final Statement statement = result1.apply(base, null, null);
+    final Statement statement = result1.apply(base, null);
     try
     {
       statement.evaluate();
@@ -477,7 +506,8 @@ public class CauseCheckableExpectedExceptionTest
     reset(base);
     final CauseCheckableExpectedException result2 = CauseCheckableExpectedException.none()
         .expect(RuntimeException.class);
-    final Statement statement2 = result2.apply(base, null, null);
+    // final Statement statement2 = result2.apply(base, null, null);
+    final Statement statement2 = result2.apply(base, null);
 
     /* when */
 
@@ -498,7 +528,8 @@ public class CauseCheckableExpectedExceptionTest
     reset(base);
     final CauseCheckableExpectedException result3 = CauseCheckableExpectedException.none()
         .expectCause(RuntimeException.class);
-    final Statement statement3 = result3.apply(base, null, null);
+    // final Statement statement3 = result3.apply(base, null, null);
+    final Statement statement3 = result3.apply(base, null);
 
     /* when */
 

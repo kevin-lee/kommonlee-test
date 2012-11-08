@@ -39,15 +39,14 @@ import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.junit.Assert;
 import org.junit.internal.matchers.TypeSafeMatcher;
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestRule;
 import org.junit.runners.model.Statement;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2011-05-01)
  */
-public class CauseCheckableExpectedException implements MethodRule
+public class CauseCheckableExpectedException implements TestRule
 {
   /**
    * @return a Rule that expects no exception to be thrown (identical to behaviour without this Rule).
@@ -74,16 +73,16 @@ public class CauseCheckableExpectedException implements MethodRule
     return causeMatcher;
   }
 
-  @Override
-  public Statement apply(final Statement base, @SuppressWarnings("unused") final FrameworkMethod method,
-      @SuppressWarnings("unused") final Object target)
-  {
-    return new CauseCheckableExpectedExceptionStatement(base);
-  }
+  // @Override
+  // public Statement apply(final Statement base, @SuppressWarnings("unused") final FrameworkMethod method,
+  // @SuppressWarnings("unused") final Object target)
+  // {
+  // return new CauseCheckableExpectedExceptionStatement(base);
+  // }
 
   /**
    * Adds {@link Matcher} to the list of requirements for any thrown exception.
-   *
+   * 
    * @param matcher
    *          the given {@link Matcher}.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -103,7 +102,7 @@ public class CauseCheckableExpectedException implements MethodRule
 
   /**
    * Adds the given type of {@link Throwable} to check if it is thrown during test.
-   *
+   * 
    * @param type
    *          an expected type of {@link Throwable}.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -115,7 +114,7 @@ public class CauseCheckableExpectedException implements MethodRule
 
   /**
    * Adds a part of message which the thrown exception must contain in its message.
-   *
+   * 
    * @param substring
    *          a substring of expected message.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -132,7 +131,7 @@ public class CauseCheckableExpectedException implements MethodRule
 
   /**
    * Adds {@code matcher} to the list of requirements for the message returned from any thrown exception.
-   *
+   * 
    * @param matcher
    *          a matcher to check the exception message.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -149,7 +148,7 @@ public class CauseCheckableExpectedException implements MethodRule
 
   /**
    * Adds {@link Matcher} to the list of requirements for the cause of any thrown exception.
-   *
+   * 
    * @param matcher
    *          the given {@link Matcher} to check the cause of exception.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -173,7 +172,7 @@ public class CauseCheckableExpectedException implements MethodRule
 
   /**
    * Adds the given type of {@link Throwable} to check if it is the cause of the thrown exception during test.
-   *
+   * 
    * @param type
    *          an expected type of the cause {@link Throwable}.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -185,7 +184,7 @@ public class CauseCheckableExpectedException implements MethodRule
 
   /**
    * Adds a part of message which the cause of thrown exception must contain in its message.
-   *
+   * 
    * @param substring
    *          a part of the cause of thrown exception.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -202,7 +201,7 @@ public class CauseCheckableExpectedException implements MethodRule
 
   /**
    * Adds {@code matcher} to the list of requirements for the message returned from the cause of any thrown exception.
-   *
+   * 
    * @param matcher
    *          a matcher to check the cause exception message.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -275,5 +274,11 @@ public class CauseCheckableExpectedException implements MethodRule
         return matcher.matches(item.getMessage());
       }
     };
+  }
+
+  @Override
+  public Statement apply(final Statement base, final org.junit.runner.Description description)
+  {
+    return new CauseCheckableExpectedExceptionStatement(base);
   }
 }
