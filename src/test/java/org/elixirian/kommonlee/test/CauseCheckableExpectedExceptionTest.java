@@ -31,8 +31,7 @@
  */
 package org.elixirian.kommonlee.test;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -48,12 +47,12 @@ import org.junit.runners.model.Statement;
 /**
  * <pre>
  *     ___  _____                                              _____
- *    /   \/    / ______ __________________  ______ __ ______ /    /   ______  ______  
- *   /        / _/ __  // /  /   / /  /   /_/ __  // //     //    /   /  ___ \/  ___ \ 
+ *    /   \/    / ______ __________________  ______ __ ______ /    /   ______  ______
+ *   /        / _/ __  // /  /   / /  /   /_/ __  // //     //    /   /  ___ \/  ___ \
  *  /        \ /  /_/ _/  _  _  /  _  _  //  /_/ _/   __   //    /___/  _____/  _____/
  * /____/\____\/_____//__//_//_/__//_//_/ /_____//___/ /__//________/\_____/ \_____/
  * </pre>
- * 
+ *
  * <pre>
  *     ___  _____                                _____
  *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
@@ -61,7 +60,7 @@ import org.junit.runners.model.Statement;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2011-05-01)
  */
@@ -96,8 +95,8 @@ public class CauseCheckableExpectedExceptionTest
 
     /* when */
     /* then */
-    assertThat(causeCheckableExpectedException.getMatcher(), is(nullValue()));
-    assertThat(causeCheckableExpectedException.getCauseMatcher(), is(nullValue()));
+    assertThat(causeCheckableExpectedException.getMatcher()).isNull();
+    assertThat(causeCheckableExpectedException.getCauseMatcher()).isNull();
   }
 
   @Test
@@ -115,8 +114,8 @@ public class CauseCheckableExpectedExceptionTest
 
     /* when */
     /* then */
-    assertThat(causeCheckableExpectedException.getMatcher(), is(nullValue()));
-    assertThat(causeCheckableExpectedException.getCauseMatcher(), is(nullValue()));
+    assertThat(causeCheckableExpectedException.getMatcher()).isNull();
+    assertThat(causeCheckableExpectedException.getCauseMatcher()).isNull();
   }
 
   @Test
@@ -132,7 +131,7 @@ public class CauseCheckableExpectedExceptionTest
     final Statement result = causeCheckableExpectedException.apply(base, null);
 
     /* then */
-    assertThat(result, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
 
     /* when */
     result.evaluate();
@@ -167,8 +166,8 @@ public class CauseCheckableExpectedExceptionTest
 		statement.evaluate();
 
 		/* then */
-		assertThat(result, is(equalTo(causeCheckableExpectedException)));
-		assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+		assertThat(result).isEqualTo(causeCheckableExpectedException);
+		assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
 		verify(base)
 		    .evaluate();
 		verify(matcher)
@@ -196,11 +195,12 @@ public class CauseCheckableExpectedExceptionTest
     statement.evaluate();
 
     /* then */
-    assertThat(result, is(equalTo(causeCheckableExpectedException)));
-    assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isEqualTo(causeCheckableExpectedException);
+    assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
     verify(base)
         .evaluate();
-    assertThat(new UnsupportedOperationException(), result.getMatcher());
+    assertThat(result.getMatcher().matches(new UnsupportedOperationException())).isTrue();
+    assertThat(result.getMatcher().matches(new RuntimeException())).isFalse();
     /* @formatter:on */
   }
 
@@ -221,16 +221,20 @@ public class CauseCheckableExpectedExceptionTest
     statement.evaluate();
 
     /* then */
-    assertThat(result, is(equalTo(causeCheckableExpectedException)));
-    assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isEqualTo(causeCheckableExpectedException);
+    assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
     verify(base).evaluate();
-    assertThat(new NullPointerException("This is a test exception."), result.getMatcher());
-    assertThat(new NullPointerException("This is not an expected exception."), is(not(result.getMatcher())));
+    assertThat(result.getMatcher()
+        .matches(new NullPointerException("This is a test exception."))).isTrue();
+    assertThat(result.getMatcher()
+        .matches(new NullPointerException("This is not an expected exception."))).isFalse();
 
     /* when */
     result.expect(UnsupportedOperationException.class);
-    assertThat(new NullPointerException("This is a test exception."), is(not(result.getMatcher())));
-    assertThat(new UnsupportedOperationException("This is a test exception."), result.getMatcher());
+    assertThat(result.getMatcher()
+        .matches(new NullPointerException("This is a test exception."))).isFalse();
+    assertThat(result.getMatcher()
+        .matches(new UnsupportedOperationException("This is a test exception."))).isTrue();
   }
 
   @Test
@@ -256,24 +260,24 @@ public class CauseCheckableExpectedExceptionTest
 
     /* when */
     final CauseCheckableExpectedException result =
-      causeCheckableExpectedException.expectMessage(is(equalTo(expectedMessage)));
+      causeCheckableExpectedException.expectMessage(org.hamcrest.CoreMatchers.is(org.hamcrest.CoreMatchers.equalTo(expectedMessage)));
 //    final Statement statement = result.apply(base, null, null);
     final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
-    assertThat(result, is(equalTo(causeCheckableExpectedException)));
-    assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isEqualTo(causeCheckableExpectedException);
+    assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
     verify(base)
         .evaluate();
-    assertThat(new NullPointerException(expectedMessage), result.getMatcher());
-    assertThat(new NullPointerException(expectedMessage + "blah blah"), is(not(result.getMatcher())));
-    assertThat(new NullPointerException("expected"), is(not(result.getMatcher())));
+    assertThat(result.getMatcher().matches(new NullPointerException(expectedMessage))).isTrue();
+    assertThat(result.getMatcher().matches(new NullPointerException(expectedMessage + "blah blah"))).isFalse();
+    assertThat(result.getMatcher().matches(new NullPointerException("expected"))).isFalse();
 
     /* when */
     result.expect(UnsupportedOperationException.class);
-    assertThat(new NullPointerException(expectedMessage), is(not(result.getMatcher())));
-    assertThat(new UnsupportedOperationException(expectedMessage), result.getMatcher());
+    assertThat(result.getMatcher().matches(new NullPointerException(expectedMessage))).isFalse();
+    assertThat(result.getMatcher().matches(new UnsupportedOperationException(expectedMessage))).isTrue();
     /* @formatter:on */
   }
 
@@ -349,8 +353,8 @@ public class CauseCheckableExpectedExceptionTest
     statement.evaluate();
 
     /* then */
-    assertThat(result, is(equalTo(causeCheckableExpectedException)));
-    assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isEqualTo(causeCheckableExpectedException);
+    assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
     verify(base)
         .evaluate();
     verify(matcher)
@@ -380,12 +384,12 @@ public class CauseCheckableExpectedExceptionTest
     statement.evaluate();
 
     /* then */
-    assertThat(result, is(equalTo(causeCheckableExpectedException)));
-    assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isEqualTo(causeCheckableExpectedException);
+    assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
     verify(base)
         .evaluate();
-    assertThat(new RootException(), result.getCauseMatcher());
-    assertThat(new UnsupportedOperationException(), is(not(result.getCauseMatcher())));
+    assertThat(result.getCauseMatcher().matches(new RootException() )).isTrue();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException())).isFalse();
     /* @formatter:on */
   }
 
@@ -409,23 +413,22 @@ public class CauseCheckableExpectedExceptionTest
     statement.evaluate();
 
     /* then */
-    assertThat(result, is(equalTo(causeCheckableExpectedException)));
-    assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isEqualTo(causeCheckableExpectedException);
+    assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
     verify(base)
         .evaluate();
-    assertThat(new NullPointerException("This is a test exception."), result.getCauseMatcher());
-    assertThat(new UnsupportedOperationException("This is a test exception."), result.getCauseMatcher());
-    assertThat(new RootException("This is a test exception."), result.getCauseMatcher());
-    assertThat(new NullPointerException("This is not an expected exception."), is(not(result.getMatcher())));
-    assertThat(new UnsupportedOperationException("This is not an expected exception."),
-        is(not(result.getCauseMatcher())));
-    assertThat(new RootException("This is not an expected exception."), is(not(result.getCauseMatcher())));
+    assertThat(result.getCauseMatcher().matches(new NullPointerException("This is a test exception."))).isTrue();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException("This is a test exception."))).isTrue();
+    assertThat(result.getCauseMatcher().matches(new RootException("This is a test exception."))).isTrue();
+    assertThat(result.getMatcher().matches(new NullPointerException("This is not an expected exception."))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException("This is not an expected exception."))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new RootException("This is not an expected exception."))).isFalse();
 
     /* when */
     result.expectCause(RootException.class);
-    assertThat(new NullPointerException("This is a test exception."), is(not(result.getCauseMatcher())));
-    assertThat(new UnsupportedOperationException("This is a test exception."), is(not(result.getCauseMatcher())));
-    assertThat(new RootException("This is a test exception."), result.getCauseMatcher());
+    assertThat(result.getCauseMatcher().matches(new NullPointerException("This is a test exception."))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException("This is a test exception."))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new RootException("This is a test exception."))).isTrue();
     /* @formatter:on */
   }
 
@@ -449,31 +452,31 @@ public class CauseCheckableExpectedExceptionTest
 
     /* when */
     final CauseCheckableExpectedException result = causeCheckableExpectedException.expect(NestedException.class)
-        .expectCauseMessage(is(equalTo(expectedMessage)));
+        .expectCauseMessage(org.hamcrest.CoreMatchers.is(org.hamcrest.CoreMatchers.equalTo(expectedMessage)));
 //    final Statement statement = result.apply(base, null, null);
     final Statement statement = result.apply(base, null);
     statement.evaluate();
 
     /* then */
-    assertThat(result, is(equalTo(causeCheckableExpectedException)));
-    assertThat(statement, is(instanceOf(CauseCheckableExpectedExceptionStatement.class)));
+    assertThat(result).isEqualTo(causeCheckableExpectedException);
+    assertThat(statement).isInstanceOf(CauseCheckableExpectedExceptionStatement.class);
     verify(base)
         .evaluate();
-    assertThat(new NullPointerException(expectedMessage), result.getCauseMatcher());
-    assertThat(new UnsupportedOperationException(expectedMessage), result.getCauseMatcher());
-    assertThat(new RootException(expectedMessage), result.getCauseMatcher());
-    assertThat(new NullPointerException(expectedMessage + "blah blah"), is(not(result.getCauseMatcher())));
-    assertThat(new NullPointerException("expected"), is(not(result.getCauseMatcher())));
-    assertThat(new UnsupportedOperationException(expectedMessage + "blah blah"), is(not(result.getCauseMatcher())));
-    assertThat(new UnsupportedOperationException("expected"), is(not(result.getCauseMatcher())));
-    assertThat(new RootException(expectedMessage + "blah blah"), is(not(result.getCauseMatcher())));
-    assertThat(new RootException("expected"), is(not(result.getCauseMatcher())));
+    assertThat(result.getCauseMatcher().matches(new NullPointerException(expectedMessage))).isTrue();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException(expectedMessage))).isTrue();
+    assertThat(result.getCauseMatcher().matches(new RootException(expectedMessage))).isTrue();
+    assertThat(result.getCauseMatcher().matches(new NullPointerException(expectedMessage + "blah blah"))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new NullPointerException("expected"))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException(expectedMessage + "blah blah"))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException("expected"))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new RootException(expectedMessage + "blah blah"))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new RootException("expected"))).isFalse();
 
     /* when */
     result.expectCause(RootException.class);
-    assertThat(new NullPointerException(expectedMessage), is(not(result.getCauseMatcher())));
-    assertThat(new UnsupportedOperationException(expectedMessage), is(not(result.getCauseMatcher())));
-    assertThat(new RootException(expectedMessage), result.getCauseMatcher());
+    assertThat(result.getCauseMatcher().matches(new NullPointerException(expectedMessage))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new UnsupportedOperationException(expectedMessage))).isFalse();
+    assertThat(result.getCauseMatcher().matches(new RootException(expectedMessage))).isTrue();
     /* @formatter:on */
   }
 

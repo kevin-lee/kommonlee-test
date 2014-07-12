@@ -32,13 +32,12 @@
 package org.elixirian.kommonlee.test;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.matchers.JUnitMatchers.*;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
-import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.rules.TestRule;
 import org.junit.runners.model.Statement;
 
@@ -82,7 +81,7 @@ public class CauseCheckableExpectedException implements TestRule
 
   /**
    * Adds {@link Matcher} to the list of requirements for any thrown exception.
-   * 
+   *
    * @param matcher
    *          the given {@link Matcher}.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -96,13 +95,13 @@ public class CauseCheckableExpectedException implements TestRule
   {
     @SuppressWarnings("unchecked")
     final Matcher<Object> castedMatcher = (Matcher<Object>) matcher;
-    this.matcher = null == this.matcher ? castedMatcher : both(this.matcher).and(matcher);
+    this.matcher = null == this.matcher ? castedMatcher : both(this.matcher).and(castedMatcher);
     return this;
   }
 
   /**
    * Adds the given type of {@link Throwable} to check if it is thrown during test.
-   * 
+   *
    * @param type
    *          an expected type of {@link Throwable}.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -114,7 +113,7 @@ public class CauseCheckableExpectedException implements TestRule
 
   /**
    * Adds a part of message which the thrown exception must contain in its message.
-   * 
+   *
    * @param substring
    *          a substring of expected message.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -131,7 +130,7 @@ public class CauseCheckableExpectedException implements TestRule
 
   /**
    * Adds {@code matcher} to the list of requirements for the message returned from any thrown exception.
-   * 
+   *
    * @param matcher
    *          a matcher to check the exception message.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -148,7 +147,7 @@ public class CauseCheckableExpectedException implements TestRule
 
   /**
    * Adds {@link Matcher} to the list of requirements for the cause of any thrown exception.
-   * 
+   *
    * @param matcher
    *          the given {@link Matcher} to check the cause of exception.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -172,7 +171,7 @@ public class CauseCheckableExpectedException implements TestRule
 
   /**
    * Adds the given type of {@link Throwable} to check if it is the cause of the thrown exception during test.
-   * 
+   *
    * @param type
    *          an expected type of the cause {@link Throwable}.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -184,7 +183,7 @@ public class CauseCheckableExpectedException implements TestRule
 
   /**
    * Adds a part of message which the cause of thrown exception must contain in its message.
-   * 
+   *
    * @param substring
    *          a part of the cause of thrown exception.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -201,7 +200,7 @@ public class CauseCheckableExpectedException implements TestRule
 
   /**
    * Adds {@code matcher} to the list of requirements for the message returned from the cause of any thrown exception.
-   * 
+   *
    * @param matcher
    *          a matcher to check the cause exception message.
    * @return this {@link CauseCheckableExpectedException} instance itself for method chaining.
@@ -252,15 +251,15 @@ public class CauseCheckableExpectedException implements TestRule
       }
       if (null != causeMatcher)
       {
-        throw new AssertionError("Expected test to throw a Throwable caused by "
-            + StringDescription.toString(causeMatcher));
+        throw new AssertionError("Expected test to throw a Throwable caused by " + StringDescription.toString(causeMatcher));
       }
     }
   }
 
   private Matcher<Throwable> hasMessage(final Matcher<String> matcher)
   {
-    return new TypeSafeMatcher<Throwable>() {
+    return new TypeSafeMatcher<Throwable>()
+    {
       @Override
       public void describeTo(final Description description)
       {
