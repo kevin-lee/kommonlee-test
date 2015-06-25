@@ -112,7 +112,7 @@ public final class CommonTestHelper
 
 		public ConstructorTester<T> doNotForceAccessibility()
 		{
-			this.forceAccessibility = true;
+			this.forceAccessibility = false;
 			return this;
 		}
 
